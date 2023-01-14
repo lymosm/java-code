@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import com.test.util.Db;
+import java.sql.PreparedStatement;
 
 public class jdbcConnect {
 
@@ -96,5 +97,43 @@ public class jdbcConnect {
         int ret = db.connection(sql);
         db.close();
         return ret;
+    }
+
+    public static void trans(){
+        String url = "jdbc:mysql://localhost:3306/test";
+        String user = "root";
+        String password = "root";
+        Connection conn = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            conn = DriverManager.getConnection(url, user, password);
+         //   Statement stmt = conn.createStatement();
+            String sql = "update user set name = 'user' where id = ? and email = ?";
+            PreparedStatement psst = conn.prepareStatement(sql);
+            conn.setAutoCommit(false);
+            psst.setInt(1, 10);
+            psst.setString(2,"123@ed.com");
+           // stmt.executeUpdate(sql);
+            psst.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+            try {
+                conn.rollback();
+            }catch(Exception e2){
+                e2.printStackTrace();
+            }
+        }finally{
+            if(conn != null){
+                try {
+                    conn.commit();
+                    conn.close();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
     }
 }
