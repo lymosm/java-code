@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <person>
+        <id>1</id>
+        <name>name</name>
+    </person>
+    <person pro="user">
+        <id>2</id>
+        <name>name2</name>
+    </person>
+</root>
