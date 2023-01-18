@@ -9,7 +9,7 @@ import java.net.URL;
 
 public class Db {
 
-    private Connection conn = null;
+    private static Connection conn = null;
     private Statement stmt = null;
     private static String url;
     private static String user;
@@ -48,6 +48,10 @@ public class Db {
             e.printStackTrace();
         }
         return row;
+    }
+
+    public static Connection getConnection(){
+        return conn;
     }
 
     public void close(){
