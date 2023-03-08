@@ -35,5 +35,9 @@
     <orderEntry type="library" name="taglibs-standard-compat-1.2.5" level="project" />
     <orderEntry type="library" name="jstl" level="project" />
     <orderEntry type="library" name="jstl (2)" level="project" />
+    <orderEntry type="library" name="poi-5.1.0" level="project" />
+    <orderEntry type="library" name="poi-ooxml-5.1.0" level="project" />
+    <orderEntry type="library" name="poi-4.1.2 (2)" level="project" />
+    <orderEntry type="library" name="commons-collections4-4.4" level="project" />
   </component>
 </module>
