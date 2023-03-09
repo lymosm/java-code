@@ -68,8 +68,8 @@
       <file leaf-file-name="ExcelDeal.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/httpProject/src/com/servlet/ExcelDeal.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="23" column="50" lean-forward="true" selection-start-line="23" selection-start-column="50" selection-end-line="23" selection-end-column="50" />
+            <state relative-caret-position="988">
+              <caret line="118" column="32" lean-forward="true" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -128,6 +128,11 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>Kickstand Portable Monitor</find>
+    </findStrings>
+  </component>
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
       <projects_view />
@@ -178,7 +183,7 @@
     <option name="FILTER_DEBUG" value="true" />
     <option name="CUSTOM_FILTER" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="x" value="260" />
     <option name="y" value="20" />
     <option name="width" value="1400" />
@@ -761,15 +766,15 @@
       <workItem from="1676855917933" duration="2128000" />
       <workItem from="1677114656958" duration="5298000" />
       <workItem from="1678065241938" duration="3437000" />
-      <workItem from="1678254205476" duration="5330000" />
+      <workItem from="1678254205476" duration="10776000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67269000" />
+    <option name="totallyTimeSpent" value="72715000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="260" y="20" width="1400" height="992" extended-state="1" />
+    <frame x="260" y="20" width="1400" height="992" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1191,8 +1196,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/httpProject/src/com/servlet/ExcelDeal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="23" column="50" lean-forward="true" selection-start-line="23" selection-start-column="50" selection-end-line="23" selection-end-column="50" />
+        <state relative-caret-position="988">
+          <caret line="118" column="32" lean-forward="true" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
