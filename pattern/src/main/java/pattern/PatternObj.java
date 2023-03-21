@@ -55,20 +55,60 @@ public class PatternObj {
 
     public static void query() throws Exception{
         stmt = conn.createStatement();
-        String sql = "";
+        String sql = "select a.ID, a.post_title, a.post_content from esr_posts as a \n" +
+                "left join esr_multi_trans as b on a.ID = b.element_id and b.language_id = 1 and b.element_type = \"post_product\"\n" +
+                "where a.post_type = \"product\" and a.post_content like \"%uc-dt-cont%\" and b.id is not null";
+       //  sql += " and a.ID = 215320";
         ResultSet rs = stmt.executeQuery(sql);
+        int i = 0;
         while(rs.next()){
             Integer product_id =  rs.getInt("ID");
             String product_name = rs.getString("post_title");
             String cont = rs.getString("post_content");
+            dealCont(cont, product_id, product_name);
+
+            reset();
+            i++;
+            if(i > 10) {
+              //  break;
+            }
         }
         rs.close();
         stmt.close();
-        conn.close();
+       // conn.close();
+    }
+
+    public static void reset(){
+        dt_title_list = new ArrayList();
+        dt_cont_list = new ArrayList<String>();
+        dt_icon_list = new ArrayList<String>();
+        dt_icon_img_list = new ArrayList<String>();
+
+        common_title_list = new ArrayList<String>();
+        common_field_list = new ArrayList<String>();
+
+        mo3_img_id_index = 1;
+        mo3_txt_title_index = 1;
+        mo3_txt_detail_index = 1;
+
+        mo4_img_id_index = 1;
+        mo4_txt_title_index = 1;
+        mo4_txt_detail_index = 1;
+
+        mo5_video_url_index = 1;
+
+
+        mo2_pc_img_id_index = 1;
+        mo2_m_img_id_index = 1;
+        mo2_txt_title_index = 1;
+        mo2_txt_detail_index = 1;
+
+        mo6_txt_title_index = 1;
+        mo6_txt_detail_index = 1;
     }
 
     public static void main(String args[]){
-        System.out.println("start");
+     //   System.out.println("start");
         String str = "J<a href=>ure 世界 的健康度<a hdur></a> sss" +
                 "dkkkdl  <a href=''>ssdas</a>ddd";
         String str2 = "[ux_banner label=\"pc-top\" visibility=\"hide-for-small\" height=\"448px\" class=\"uc-top\"]\n" +
@@ -133,8 +173,54 @@ public class PatternObj {
                 "            [/text_box]  \n" +
                 "            [/ux_banner]<p><style>.uc-dt-img1{ background-image: url(https://lo.wp.com/wp-includes/images/media/default.png); }.uc-dt-img2{ background-image: url(https://lo.wp.com/wp-includes/images/media/default.png); }.uc-dt-img3{ background-image: url(https://lo.wp.com/wp-includes/images/media/default.png); }.uc-dt-img4{ background-image: url(https://lo.wp.com/wp-includes/images/media/default.png); }</style></p>";
 
-        String str3 = str2.replaceAll("\\n", "").replaceAll("\\\\n", "");
-       // System.out.println(str3);
+        // dealCont(str2);
+        try {
+            connect();
+            query();
+            dbClose();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void dbClose() throws Exception{
+        conn.close();
+    }
+
+    public static String findImgId(String url) throws Exception{
+        String regx = "20[\\d]{2}/[\\d]{2}/.*";
+        Pattern p = Pattern.compile(regx);
+        Matcher match = p.matcher(url);
+        String img_id = null;
+        while(match.find()){
+            img_id = match.group();
+            // System.out.println(img_id);
+        }
+        if(img_id != null){
+            String sql = "select post_id from esr_postmeta where meta_value = \"" + img_id + "\" and meta_key = \"_wp_attached_file\"";
+            // connect();
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            int id = 0;
+            if(rs.next()){
+                id = rs.getInt("post_id");
+            }
+
+            rs.close();
+            stmt.close();
+            // conn.close();
+            if(id > 0) {
+                return String.valueOf(id);
+            }
+        }
+        return url;
+    }
+
+    public static void dealCont(String str2, int product_id, String product_name){
+      //  String str3 = str2.replaceAll("\\n", "").replaceAll("\\\\n", "");
+        String str3 = str2.replaceAll("\\r\\n", "").replaceAll("\\n", "");
+        // System.out.println(str2);
+        // System.out.println(str3);
 
 
         // 找出dt_img
@@ -144,14 +230,19 @@ public class PatternObj {
 
         while(match_dt.find()){
             String find_dt = match_dt.group(1);
-            // System.out.println(find_dt);
-            dt_icon_img_list.add(find_dt);
+            try {
+                String img_id = findImgId(find_dt);
+                // System.out.println(find_dt);
+                dt_icon_img_list.add(img_id);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
 
-       // String regx = "\\[ux_banner([\\s\\S])*\\/ux_banner\\]";
+        // String regx = "\\[ux_banner([\\s\\S])*\\/ux_banner\\]";
         String regx = "\\[ux_banner(.+?)\\/ux_banner\\]";
         // String reg = "\\[ux_banner[^\\[\\]]*?\\\\sbg=['\\"]?(.*?)['\\"]?(\\\\s.*?)?>([^><]*)/ux_banner\\]";
-      //  String reg = "<" + element + "[^<>]*?\\\\s" + attr + "=['\\"]?(.*?)['\\"]?(\\\\s.*?)?>([^><]*)</" + element + ">";
+        //  String reg = "<" + element + "[^<>]*?\\\\s" + attr + "=['\\"]?(.*?)['\\"]?(\\\\s.*?)?>([^><]*)</" + element + ">";
 
         Pattern p = Pattern.compile(regx);
         Matcher match = p.matcher(str3);
@@ -160,19 +251,21 @@ public class PatternObj {
         while(match.find()){
             String find = match.group();
             dealBanner(find, i);
-          //  System.out.println(find);
+            //  System.out.println(find);
             i++;
         }
 
         try {
-            outputCsvFile();
+            outputCsvFile(product_id, product_name);
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    public static void outputCsvFile() throws Exception{
+    public static void outputCsvFile(int product_id, String product_title) throws Exception{
         List<String> title1_list = new ArrayList<String>();
+        title1_list.add("product_id");
+        title1_list.add("product_title");
         title1_list.add("dt_text_title1");
         title1_list.add("dt_text_cont1");
         title1_list.add("dt_text_title2");
@@ -193,7 +286,7 @@ public class PatternObj {
 
 
       //  BufferedWriter writer = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (filePath,true),charSet));
-        String filepath = "E:\\output\\a.csv";
+        String filepath = "E:\\output\\" + product_title.replaceAll("\\/", "-") + ".csv";
         FileOutputStream fout = new FileOutputStream(filepath, true);
         OutputStreamWriter osw = new OutputStreamWriter(fout, "utf-8");
         BufferedWriter writer = new BufferedWriter(osw);
@@ -210,22 +303,35 @@ public class PatternObj {
             }
             writer.write("\r\n");
 
+            writer.write(String.valueOf(product_id));
+            writer.write(",");
+            writer.write(product_title);
+            writer.write(",");
+            // System.out.println(dt_title_list);
+            // System.out.println(dt_cont_list);
             for(int i = 0; i < dt_title_list.size(); i++){
-                writer.write(dt_title_list.get(i));
+                writer.write("\"" + dt_title_list.get(i) + "\"");
                 writer.write(",");
-                writer.write(dt_cont_list.get(i));
+                writer.write("\"" + dt_cont_list.get(i) + "\"");
                 writer.write(",");
             }
 
-            for(int k = 0; k < dt_icon_img_list.size(); k++){
-                writer.write(dt_icon_img_list.get(k));
-                writer.write(",");
-                writer.write(dt_cont_list.get(k));
-                writer.write(",");
+            // System.out.println(dt_icon_img_list);
+            // System.out.println(dt_icon_list);
+            try {
+                for (int k = 0; k < dt_icon_img_list.size(); k++) {
+                    writer.write("\"" + dt_icon_img_list.get(k) + "\"");
+                    writer.write(",");
+                    writer.write("\"" + dt_icon_list.get(k) + "\"");
+                    writer.write(",");
+                }
+            }catch(Exception e){
+                System.out.println("product_id: " + product_id);
+                e.printStackTrace();
             }
 
             for(String field: common_field_list){
-                writer.write(field);
+                writer.write("\"" + field + "\"");
                 writer.write(",");
             }
 
@@ -240,6 +346,7 @@ public class PatternObj {
     }
 
     public static boolean dealBanner(String banner, int i){
+
         if(i == 0){
             dealDt(banner);
         }
@@ -360,8 +467,8 @@ public class PatternObj {
         }
 
 
-        System.out.println(common_title_list);
-        System.out.println(common_field_list);
+        // System.out.println(common_title_list);
+        // System.out.println(common_field_list);
 
         return true;
     }
@@ -527,7 +634,8 @@ public class PatternObj {
     }
 
     public static void dealDt(String banner){
-        String regx = "<p class=\"uc-dt-title\">(.+?)</p>";
+        // System.out.println(banner);
+        String regx = "<p class=\"uc-dt-title\">(.*?)</p>";
         Pattern p = Pattern.compile(regx);
         Matcher match = p.matcher(banner);
         while(match.find()){
@@ -536,7 +644,7 @@ public class PatternObj {
             dt_title_list.add(find);
         }
 
-        String regx2 = "<p class=\"uc-dt-cont\">(.+?)</p>";
+        String regx2 = "<p class=\"uc-dt-cont\">(.*?)</p>";
         Pattern p2 = Pattern.compile(regx2);
         Matcher match2 = p2.matcher(banner);
         while(match2.find()){
@@ -545,12 +653,12 @@ public class PatternObj {
             dt_cont_list.add(find2);
         }
 
-        String regx3 = "<p class=\"uc-dt-icon-txt\">(.+?)</p>";
+        String regx3 = "<p class=\"uc-dt-icon-txt\">(.*?)</p>";
         Pattern p3 = Pattern.compile(regx3);
         Matcher match3 = p3.matcher(banner);
         while(match3.find()){
             String find3 = match3.group(1);
-            // System.out.println(find2);
+           // System.out.println(find3);
             dt_icon_list.add(find3);
         }
     }
